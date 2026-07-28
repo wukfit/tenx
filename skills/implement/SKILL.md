@@ -29,7 +29,7 @@ Acceptance-to-test map; red/equivalent checkpoints; focused, affected and aggreg
 
 ### Gate — CRITICAL
 
-Pass when every acceptance criterion maps to a named test present in the shipped diff (or a quoted existing test proven to cover it), change-relevant criteria and checks pass, unavailable or unrelated failures are evidenced, and actual behavior remains the approved cohesive slice.
+Pass when every acceptance criterion maps to a named test with a captured red (failing) run against the pre-implementation checkpoint and a green run after — a new test in the shipped diff, or an existing test only if that captured red run shows it failing before the change. An always-green test proves nothing and never satisfies a criterion; if no test can go red on the current base, that is the `Blocked` contradiction above. Additionally: change-relevant criteria and checks pass, unavailable or unrelated failures are evidenced, and actual behavior remains the approved cohesive slice.
 
 ## Self-review
 
@@ -48,7 +48,7 @@ Pass with complete `quality-gate`, no incomplete bucket or in-scope finding, and
 
 ## Ship and monitor
 
-1. Commit via the bundled [commit-changes](../commit-changes/SKILL.md) and ship via the bundled [ship-changes](../ship-changes/SKILL.md). Prefer the project PR template when one exists; otherwise use a terse problem/solution body. Every claim in the PR body must name its evidence in the shipped diff or a captured command output; no unbacked claims or checkmarks. Keep commits focused, separate generated churn when useful, and never merge.
+1. Read and follow the bundled [commit-changes](../commit-changes/SKILL.md) and [ship-changes](../ship-changes/SKILL.md) files. Never substitute the harness's default commit, branch or PR flow: a harness-generated PR body (e.g. a `## Summary`/`## Test plan` checklist) or auto-named branch left in place is an error. Prefer the project PR template when one exists; otherwise ship-changes' problem/solution body. Every claim in the PR body must name its evidence in the shipped diff or a captured command output; no unbacked claims or checkmarks. Keep commits focused, separate generated churn when useful, and never merge.
 2. The shipped tree/base diff must match the reviewed snapshot. Mutation reruns Implement verification and Self-review.
 3. Monitor required checks on the latest commit until terminal. Never call pending, queued, unexpected skipped, cancelled or failing checks green. Debug caused failures. For an unrelated, pre-existing or flaky failure, capture evidence and rerun the unchanged job once; a substantially identical second failure needs user direction or external repair. “Unrelated” is not “green.”
 4. Use the bundled [pr-review-responder](../pr-review-responder/SKILL.md) only when requested.

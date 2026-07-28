@@ -34,6 +34,7 @@ Run `git branch --show-current`.
   - First, peek at the diff (`git diff` + `git diff --staged`) to infer the commit subject you'd use.
   - `git checkout -b <kebab-subject>`
 - **Not on `$base`**: stay on current branch.
+- **On a harness-generated working branch** (e.g. `claude/...`): rename it to the kebab-case commit subject before pushing: `git branch -m <kebab-subject>`.
 
 ### 2. Logical unit check
 
