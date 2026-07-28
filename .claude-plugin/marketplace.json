@@ -1,0 +1,13 @@
+{
+  "name": "wukfit",
+  "owner": {
+    "name": "David Chapman"
+  },
+  "plugins": [
+    {
+      "name": "tenx",
+      "source": "./",
+      "description": "Evidence-gated software delivery from stakeholder alignment through reviewed pull request."
+    }
+  ]
+}

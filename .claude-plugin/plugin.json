@@ -1,0 +1,8 @@
+{
+  "name": "tenx",
+  "version": "0.2.0",
+  "description": "Evidence-gated software delivery from stakeholder alignment through reviewed pull request.",
+  "author": {
+    "name": "David Chapman"
+  }
+}

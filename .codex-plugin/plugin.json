@@ -1,0 +1,22 @@
+{
+  "name": "tenx",
+  "version": "0.2.0",
+  "description": "Evidence-gated software delivery from stakeholder alignment through reviewed pull request.",
+  "author": {
+    "name": "David Chapman"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "TenX",
+    "shortDescription": "Evidence-gated issue delivery.",
+    "longDescription": "Align, investigate, slice and implement software work through explicit evidence and approval gates.",
+    "developerName": "David Chapman",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Write"],
+    "defaultPrompt": [
+      "Use TenX to deliver this issue.",
+      "Investigate this approved TenX issue.",
+      "Implement this approved TenX slice."
+    ]
+  }
+}
