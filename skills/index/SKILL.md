@@ -7,13 +7,18 @@ description: Route broad TenX software-delivery requests to Understand, Investig
 
 Read [shared controls](../../references/controls.md) completely. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory (fallback: `find ~/.claude/plugins -path '*/tenx/*' -name controls.md | sort -V | tail -1`, or the equivalent plugin install root in other harnesses). A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
-Phase records exist only as files under `.tenx/<issue-id>/` (or their authorised tracker mirror). List that directory before selecting a phase. The request prompt is never a record: however detailed — incident evidence, root cause, required behavior, acceptance criteria — it is input to Understand, not an approval, an investigation or a slice. "Deliver", "fix" or "implement" in the request authorizes entering the process, never skipping phases.
+Execute these steps in order and show each result in your response before selecting a phase:
 
-Select the earliest phase whose entry evidence is satisfied:
+1. Determine `<issue-id>` per shared controls.
+2. Run `ls .tenx/<issue-id>/` at the repository root and show the output (or the error).
+3. For each record file present: recompute its digest (`shasum -a 256`) and quote its approval header or review `PASS` verbatim.
+4. Select the earliest phase below whose entry evidence is missing. State the selected phase, the files checked, the digest results and the quoted approvals. A phase selection without the step 2 output shown is invalid.
+
+Phases:
 
 1. [Understand](../understand/SKILL.md): `.tenx/<issue-id>/understand.md` with a valid approval header (quoted user response, revision id, matching digest) does not exist.
 2. [Investigate](../investigate/SKILL.md): approved `understand.md` exists, but no `investigate.md` whose review history ends in `PASS` for its current digest.
 3. [Slice](../slice/SKILL.md): approved `understand.md` and PASS-reviewed `investigate.md` exist, but no `slice.md` with a valid approval header.
 4. [Implement](../implement/SKILL.md): all three records verify by digest and one slice from the approved sequence is selected — Slice approval is the implementation authority.
 
-Never reconstruct missing approval from intent, summaries, request detail or later work. If evidence changed, return to its owning phase. State the selected phase, the record files checked and their digest results, then read and follow that phase file completely. Load no later phase early.
+The request prompt is never a record. "I have approved alignment from the incident context", "the request", or "the prompt" is always an error: alignment approval exists only as `understand.md`'s approval header. However detailed the request — incident evidence, root cause, required behavior, acceptance criteria — it is input to Understand, not an approval, an investigation or a slice. "Deliver", "fix" or "implement" in the request authorizes entering the process, never skipping phases. Never reconstruct missing approval from intent, summaries, request detail or later work. If evidence changed, return to its owning phase. Read and follow the selected phase file completely; load no later phase early.
