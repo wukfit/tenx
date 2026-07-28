@@ -57,7 +57,7 @@ If not one unit, STOP. Tell user which commits belong together, recommend splitt
 
 ### 3. Commit
 
-If there are uncommitted changes, invoke the bundled [commit-changes](../commit-changes/SKILL.md) skill to create the commit(s). Read it and follow it.
+If there are uncommitted changes, invoke the bundled [commit-changes](../commit-changes/SKILL.md) skill to create the commit(s). Read it and follow it (resolve the path from this SKILL.md's installed location, not the working directory).
 
 If nothing to commit and no new commits vs `origin/$base`, stop — nothing to ship.
 

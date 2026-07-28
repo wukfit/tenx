@@ -5,7 +5,7 @@ description: Establish and obtain approval for a software issue's need, scope, a
 
 # Understand
 
-Read [shared controls](../../references/controls.md) completely before acting.
+Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory (fallback: `find ~/.claude/plugins -path '*/tenx/*' -name controls.md | sort -V | tail -1`, or the equivalent plugin install root in other harnesses). A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
 ## Goal — CRITICAL
 

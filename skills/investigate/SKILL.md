@@ -5,7 +5,7 @@ description: Prove the smallest safe implementation path for an exact approved T
 
 # Investigate
 
-Read [shared controls](../../references/controls.md) completely before acting. Require and verify the exact approved Understand record and quoted approval — read `.tenx/<issue-id>/understand.md`, recompute its digest and match the approval header; a missing file or mismatch returns to Understand. Request detail is never a substitute for the record.
+Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory (fallback: `find ~/.claude/plugins -path '*/tenx/*' -name controls.md | sort -V | tail -1`, or the equivalent plugin install root in other harnesses). A linked file that cannot be read is a hard stop: report it and stop — never proceed without it. Require and verify the exact approved Understand record and quoted approval — read `.tenx/<issue-id>/understand.md`, recompute its digest and match the approval header; a missing file or mismatch returns to Understand. Request detail is never a substitute for the record.
 
 ## Goal — CRITICAL
 

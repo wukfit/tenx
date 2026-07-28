@@ -5,7 +5,7 @@ description: Route broad TenX software-delivery requests to Understand, Investig
 
 # TenX
 
-Read [shared controls](../../references/controls.md) completely.
+Read [shared controls](../../references/controls.md) completely. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory (fallback: `find ~/.claude/plugins -path '*/tenx/*' -name controls.md | sort -V | tail -1`, or the equivalent plugin install root in other harnesses). A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
 Phase records exist only as files under `.tenx/<issue-id>/` (or their authorised tracker mirror). List that directory before selecting a phase. The request prompt is never a record: however detailed — incident evidence, root cause, required behavior, acceptance criteria — it is input to Understand, not an approval, an investigation or a slice. "Deliver", "fix" or "implement" in the request authorizes entering the process, never skipping phases.
 

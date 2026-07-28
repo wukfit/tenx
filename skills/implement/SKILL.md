@@ -5,7 +5,7 @@ description: Implement, self-review, ship and monitor one exact approved TenX sl
 
 # Implement
 
-Read [shared controls](../../references/controls.md) completely before acting.
+Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file (including the bundled quality-gate, commit-changes, ship-changes and pr-review-responder skills) from this SKILL.md's own installed location, never from the working directory (fallback: `find ~/.claude/plugins -path '*/tenx/*' -name controls.md | sort -V | tail -1`, or the equivalent plugin install root in other harnesses). A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
 Require the exact approved Understand and Slice records with quoted approvals, the exact Investigate record with its independent `PASS`, and one slice selected from the approved sequence — Slice approval is the implementation authority. Verify mechanically before anything else: read the files under `.tenx/<issue-id>/`, recompute each digest (`shasum -a 256`), and match the approval headers and the Investigate `PASS` to the current digests. Any missing file or digest mismatch: stop and route via [index](../index/SKILL.md); never proceed on request detail. Then verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
 
