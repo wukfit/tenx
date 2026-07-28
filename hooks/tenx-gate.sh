@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# TenX deterministic phase gate. Blocks entry to Investigate/Slice/Implement
-# unless the required .tenx/ records exist. Exit 2 = deny (stderr shown to the model).
+# TenX deterministic phase gate (Claude Code + Codex; both set CLAUDE_PLUGIN_ROOT).
+# Blocks entry to Investigate/Slice/Implement unless the required .tenx/ records
+# exist, and blocks PR/MR creation in TenX-managed repos without full approvals.
+# Exit 2 = deny (stderr shown to the model).
 set -euo pipefail
 payload="$(cat)"
 exec python3 - "$payload" <<'PY'
 import glob
 import json
 import os
+import re
 import subprocess
 import sys
 
@@ -15,7 +18,11 @@ tool = data.get("tool_name") or ""
 ti = data.get("tool_input") or {}
 cwd = data.get("cwd") or os.getcwd()
 
+SKILL_RE = re.compile(r"skills/(investigate|slice|implement)/SKILL\.md")
+SHIP_RE = re.compile(r"\bgh\s+pr\s+create\b|\bglab\s+mr\s+create\b")
+
 phase = None
+ship = False
 if tool == "Skill":
     s = (ti.get("skill") or "").strip()
     if s in ("tenx:investigate", "tenx:slice", "tenx:implement"):
@@ -23,10 +30,19 @@ if tool == "Skill":
 elif tool == "Read":
     fp = ti.get("file_path") or ""
     if "/plugins/" in fp and "/tenx/" in fp:
-        for p in ("investigate", "slice", "implement"):
-            if fp.endswith("skills/%s/SKILL.md" % p):
-                phase = p
-if phase is None:
+        m = SKILL_RE.search(fp)
+        if m:
+            phase = m.group(1)
+elif tool == "Bash":
+    cmd = ti.get("command") or ""
+    if "/tenx/" in cmd and ("plugins" in cmd or "/.codex/" in cmd):
+        m = SKILL_RE.search(cmd)
+        if m:
+            phase = m.group(1)
+    if SHIP_RE.search(cmd):
+        ship = True
+
+if phase is None and not ship:
     sys.exit(0)
 
 
@@ -61,6 +77,32 @@ def investigate_pass():
     return False
 
 
+def deny(msg):
+    sys.stderr.write(msg)
+    sys.exit(2)
+
+
+if ship:
+    # Only gate shipping in repos where TenX is engaged.
+    if os.path.isdir(tenx):
+        missing = []
+        if not record_exists("understand.approval.md"):
+            missing.append("understand.approval.md")
+        if not investigate_pass():
+            missing.append("review-investigate-r<N>.md containing PASS")
+        if not record_exists("slice.approval.md"):
+            missing.append("slice.approval.md")
+        if missing:
+            deny(
+                "TenX ship gate (deterministic hook): this repository has TenX records "
+                "(.tenx/ exists at %s) but PR/MR creation requires the full approval chain. "
+                "Missing under .tenx/<issue-id>/: %s. Complete the owning phases first. "
+                "If this PR is intentionally outside TenX, ask the user to confirm before shipping."
+                % (root, "; ".join(missing))
+            )
+    if phase is None:
+        sys.exit(0)
+
 missing = []
 if not record_exists("understand.approval.md"):
     missing.append(".tenx/<issue-id>/understand.approval.md (approved Understand record)")
@@ -70,13 +112,12 @@ if phase == "implement" and not record_exists("slice.approval.md"):
     missing.append(".tenx/<issue-id>/slice.approval.md (approved slice sequence)")
 
 if missing:
-    sys.stderr.write(
+    deny(
         "TenX gate (deterministic hook): cannot enter %s — missing: %s. "
         "Records exist only as files under .tenx/<issue-id>/ at the repository root (%s). "
         "Request detail is never a record and never an approval. "
         "Route via tenx:index; with no records the phase is Understand."
         % (phase, "; ".join(missing), root)
     )
-    sys.exit(2)
 sys.exit(0)
 PY
