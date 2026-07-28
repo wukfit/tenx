@@ -22,7 +22,7 @@ Prove the smallest safe implementation path satisfying the approved alignment.
 7. Map every criterion and invariant to its seam, callers, persistence/contract impact and named test or command.
 8. Record facts separately from inferences, review/conflict/rollout risks, safe intermediate states and the minimum path.
 9. Independently review for missing behaviors, callers, invariants, history, unsafe states, unsupported assumptions and simpler safe seams.
-10. Persist the exact investigation record, source manifest, minimum path, matrix, acceptance map, full review history and remaining questions. The Gate passes on the independent `PASS` without user approval; present the record and stop only on user request, a hard stop, or an unresolved material unknown.
+10. Persist the exact investigation record, source manifest, minimum path, matrix, acceptance map, full review history and remaining questions as files under `.tenx/<issue-id>/`, and show their paths and digests. The Gate passes on the independent `PASS` — persisted as `review-investigate-r<N>.md` naming the reviewed record digest — without user approval; present the record and stop only on user request, a hard stop, or an unresolved material unknown.
 
 ## Evidence
 

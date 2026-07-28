@@ -49,9 +49,10 @@ Pass with complete `quality-gate`, no incomplete bucket or in-scope finding, and
 ## Ship and monitor
 
 1. Read and follow the bundled [commit-changes](../commit-changes/SKILL.md) and [ship-changes](../ship-changes/SKILL.md) files. Never substitute the harness's default commit, branch or PR flow: a harness-generated PR body (e.g. a `## Summary`/`## Test plan` checklist) or auto-named branch left in place is an error. Prefer the project PR template when one exists; otherwise ship-changes' problem/solution body. Every claim in the PR body must name its evidence in the shipped diff or a captured command output; no unbacked claims or checkmarks. Keep commits focused, separate generated churn when useful, and never merge.
-2. The shipped tree/base diff must match the reviewed snapshot. Mutation reruns Implement verification and Self-review.
-3. Monitor required checks on the latest commit until terminal. Never call pending, queued, unexpected skipped, cancelled or failing checks green. Debug caused failures. For an unrelated, pre-existing or flaky failure, capture evidence and rerun the unchanged job once; a substantially identical second failure needs user direction or external repair. “Unrelated” is not “green.”
-4. Use the bundled [pr-review-responder](../pr-review-responder/SKILL.md) only when requested.
+2. Creating the pull request is a required deliverable of this phase; a user instruction not to merge is not an instruction to skip PR creation. Never merge.
+3. The shipped tree/base diff must match the reviewed snapshot. Mutation reruns Implement verification and Self-review.
+4. Monitor required checks on the latest commit until terminal. Never call pending, queued, unexpected skipped, cancelled or failing checks green. Debug caused failures. For an unrelated, pre-existing or flaky failure, capture evidence and rerun the unchanged job once; a substantially identical second failure needs user direction or external repair. “Unrelated” is not “green.”
+5. Use the bundled [pr-review-responder](../pr-review-responder/SKILL.md) only when requested.
 
 ### Gate — CRITICAL
 

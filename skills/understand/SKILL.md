@@ -21,7 +21,7 @@ Agree the need, assigned deliverables, acceptance criteria, definition of done a
 6. Keep a ledger of question, resolving evidence, resolution and wrong-answer impact. For external decisions add owner, dependent/independent work and re-entry. If empty, record `Questions: None` with evidence.
 7. Exclude externally dependent work unless the user supplies an interim rule and safe rollout. Mark provisional decisions with owner and re-entry.
 8. Present a stakeholder-ready record containing current-state audit, context, requirements, acceptance criteria, definition of done, decisions, exclusions, contracts and ledger. Persist it per shared controls (`.tenx/<issue-id>/understand.md`), mirrored to the shared tracker once approved — approval grants tracker writes for this issue.
-9. Stop and request explicit approval of the exact record revision. A named parent issue later receives one child ticket per approved slice in the shared tracker; if no suitable parent exists, propose one.
+9. Stop and request explicit approval of the exact record revision, showing the persisted file's path and `shasum -a 256` digest in the same message — a request without them is invalid. After approval, write `understand.approval.md` per shared controls and show it. A named parent issue later receives one child ticket per approved slice in the shared tracker; if no suitable parent exists, propose one.
 
 ## Evidence
 
