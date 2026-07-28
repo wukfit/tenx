@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# TenX deterministic phase gate (Claude Code + Codex; both set CLAUDE_PLUGIN_ROOT).
+# TenX deterministic phase gate (Claude Code, Claude desktop agent mode, Codex).
 # Blocks entry to Investigate/Slice/Implement unless the required .tenx/ records
 # exist, and blocks PR/MR creation in TenX-managed repos without full approvals.
 # Exit 2 = deny (stderr shown to the model).
@@ -19,7 +19,35 @@ ti = data.get("tool_input") or {}
 cwd = data.get("cwd") or os.getcwd()
 
 SKILL_RE = re.compile(r"skills/(investigate|slice|implement)/SKILL\.md")
+PATH_RE = re.compile(r"(\S*skills/(?:investigate|slice|implement)/SKILL\.md)")
 SHIP_RE = re.compile(r"\bgh\s+pr\s+create\b|\bglab\s+mr\s+create\b")
+
+
+def is_tenx_phase_file(fp):
+    # Identify by content marker, not path shape: every gated tenx phase file
+    # references .tenx/ records. Unreadable/absent file -> not gated (Read will
+    # error on its own).
+    if not os.path.isfile(fp):
+        return False
+    try:
+        return ".tenx/" in open(fp, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return False
+
+
+def is_dev_copy(fp):
+    # The source repo (has .git at the plugin root) stays readable for editing;
+    # installed copies (claude/codex caches, desktop agent mounts) have no .git.
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(fp))))
+    return os.path.exists(os.path.join(root, ".git"))
+
+
+def gated_phase_from_path(fp):
+    m = SKILL_RE.search(fp)
+    if m and is_tenx_phase_file(fp) and not is_dev_copy(fp):
+        return m.group(1)
+    return None
+
 
 phase = None
 ship = False
@@ -28,17 +56,15 @@ if tool == "Skill":
     if s in ("tenx:investigate", "tenx:slice", "tenx:implement"):
         phase = s.split(":", 1)[1]
 elif tool == "Read":
-    fp = ti.get("file_path") or ""
-    if "/plugins/" in fp and "/tenx/" in fp:
-        m = SKILL_RE.search(fp)
-        if m:
-            phase = m.group(1)
+    phase = gated_phase_from_path(ti.get("file_path") or "")
 elif tool == "Bash":
     cmd = ti.get("command") or ""
-    if "/tenx/" in cmd and ("plugins" in cmd or "/.codex/" in cmd):
-        m = SKILL_RE.search(cmd)
-        if m:
-            phase = m.group(1)
+    m = PATH_RE.search(cmd)
+    if m:
+        p = m.group(1).strip("'\"")
+        if not os.path.isabs(p):
+            p = os.path.join(cwd, p)
+        phase = gated_phase_from_path(p)
     if SHIP_RE.search(cmd):
         ship = True
 
