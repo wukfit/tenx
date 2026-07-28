@@ -5,7 +5,7 @@ description: Prove the smallest safe implementation path for an exact approved T
 
 # Investigate
 
-Read [shared controls](../../references/controls.md) completely before acting. Require and verify the exact approved Understand record and quoted approval; otherwise return to Understand.
+Read [shared controls](../../references/controls.md) completely before acting. Require and verify the exact approved Understand record and quoted approval — read `.tenx/<issue-id>/understand.md`, recompute its digest and match the approval header; a missing file or mismatch returns to Understand. Request detail is never a substitute for the record.
 
 ## Goal — CRITICAL
 

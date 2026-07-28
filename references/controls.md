@@ -5,7 +5,7 @@ Apply these controls in every phase.
 ## Gates and authority
 
 - Pass on evidence, never intent, confidence or promised work.
-- The initial request authorizes read-only investigation only. It does not approve an unseen record, tracker write or implementation.
+- The initial request authorizes read-only investigation only. It does not approve an unseen record, tracker write or implementation. Detail in the request — incident evidence, root cause, named seams, acceptance criteria — is input for building records, never a substitute for one; approval exists only as a recorded approval header in a persisted record.
 - Understand and Slice each require separate explicit user approval after presenting the exact record; stop after each presentation. Investigate is delegated: its Gate passes on an independent reviewer `PASS` for the exact revision, presented to the user only on request or hard stop.
 - Approving the Understand record also authorises tracker writes for this issue's records and tickets. Approving the Slice sequence also authorises implementing its slices in order, one green PR at a time, with no further per-slice approval.
 - Hard stops always return to the user: the Gate-failure breaker, `Blocked`, any rescope, or a material contradiction of an approved record.

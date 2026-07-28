@@ -5,7 +5,7 @@ description: Turn an exact approved TenX investigation into user-approved cohesi
 
 # Slice
 
-Read [shared controls](../../references/controls.md) completely before acting. Require and verify the exact approved Understand record with quoted approval and the exact Investigate record with its independent `PASS`; otherwise return to the missing or changed phase.
+Read [shared controls](../../references/controls.md) completely before acting. Require and verify the exact approved Understand record with quoted approval and the exact Investigate record with its independent `PASS` — read both files under `.tenx/<issue-id>/`, recompute digests and match the approval header and `PASS`; a missing file or mismatch returns to the missing or changed phase. Request detail is never a substitute for a record.
 
 ## Goal — CRITICAL
 

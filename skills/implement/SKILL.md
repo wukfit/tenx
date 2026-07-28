@@ -7,7 +7,7 @@ description: Implement, self-review, ship and monitor one exact approved TenX sl
 
 Read [shared controls](../../references/controls.md) completely before acting.
 
-Require the exact approved Understand and Slice records with quoted approvals, the exact Investigate record with its independent `PASS`, and one slice selected from the approved sequence — Slice approval is the implementation authority. Verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
+Require the exact approved Understand and Slice records with quoted approvals, the exact Investigate record with its independent `PASS`, and one slice selected from the approved sequence — Slice approval is the implementation authority. Verify mechanically before anything else: read the files under `.tenx/<issue-id>/`, recompute each digest (`shasum -a 256`), and match the approval headers and the Investigate `PASS` to the current digests. Any missing file or digest mismatch: stop and route via [index](../index/SKILL.md); never proceed on request detail. Then verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
 
 ## Goal — CRITICAL
 
