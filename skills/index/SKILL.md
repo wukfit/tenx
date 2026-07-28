@@ -11,14 +11,14 @@ Execute these steps in order and show each result in your response before select
 
 1. Determine `<issue-id>` per shared controls.
 2. Run `ls .tenx/<issue-id>/` at the repository root and show the output (or the error).
-3. For each record file present: recompute its digest (`shasum -a 256`) and quote its approval header or review `PASS` verbatim.
+3. For each record file present: recompute its digest (`shasum -a 256`) and quote its sibling approval file (`<record>.approval.md`) or review `PASS` verbatim.
 4. Select the earliest phase below whose entry evidence is missing. State the selected phase, the files checked, the digest results and the quoted approvals. A phase selection without the step 2 output shown is invalid.
 
 Phases:
 
-1. [Understand](../understand/SKILL.md): `.tenx/<issue-id>/understand.md` with a valid approval header (quoted user response, revision id, matching digest) does not exist.
+1. [Understand](../understand/SKILL.md): `.tenx/<issue-id>/understand.md` with a valid `understand.approval.md` (quoted user response, revision id, digest matching the record file) does not exist.
 2. [Investigate](../investigate/SKILL.md): approved `understand.md` exists, but no `investigate.md` whose review history ends in `PASS` for its current digest.
-3. [Slice](../slice/SKILL.md): approved `understand.md` and PASS-reviewed `investigate.md` exist, but no `slice.md` with a valid approval header.
+3. [Slice](../slice/SKILL.md): approved `understand.md` and PASS-reviewed `investigate.md` exist, but no `slice.md` with a valid `slice.approval.md`.
 4. [Implement](../implement/SKILL.md): all three records verify by digest and one slice from the approved sequence is selected — Slice approval is the implementation authority.
 
-The request prompt is never a record. "I have approved alignment from the incident context", "the request", or "the prompt" is always an error: alignment approval exists only as `understand.md`'s approval header. However detailed the request — incident evidence, root cause, required behavior, acceptance criteria — it is input to Understand, not an approval, an investigation or a slice. "Deliver", "fix" or "implement" in the request authorizes entering the process, never skipping phases. Never reconstruct missing approval from intent, summaries, request detail or later work. If evidence changed, return to its owning phase. Read and follow the selected phase file completely; load no later phase early.
+The request prompt is never a record. "I have approved alignment from the incident context", "the request", or "the prompt" is always an error: alignment approval exists only as the persisted `understand.approval.md`. However detailed the request — incident evidence, root cause, required behavior, acceptance criteria — it is input to Understand, not an approval, an investigation or a slice. "Deliver", "fix" or "implement" in the request authorizes entering the process, never skipping phases. Never reconstruct missing approval from intent, summaries, request detail or later work. If evidence changed, return to its owning phase. Read and follow the selected phase file completely; load no later phase early.

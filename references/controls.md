@@ -5,7 +5,7 @@ Apply these controls in every phase.
 ## Gates and authority
 
 - Pass on evidence, never intent, confidence or promised work.
-- The initial request authorizes read-only investigation only. It does not approve an unseen record, tracker write or implementation. Detail in the request — incident evidence, root cause, named seams, acceptance criteria — is input for building records, never a substitute for one; approval exists only as a recorded approval header in a persisted record.
+- The initial request authorizes read-only investigation only. It does not approve an unseen record, tracker write or implementation. Detail in the request — incident evidence, root cause, named seams, acceptance criteria — is input for building records, never a substitute for one; approval exists only as a persisted approval file per Records and revisions.
 - Understand and Slice each require separate explicit user approval after presenting the exact record; stop after each presentation. Investigate is delegated: its Gate passes on an independent reviewer `PASS` for the exact revision, presented to the user only on request or hard stop.
 - Approving the Understand record also authorises tracker writes for this issue's records and tickets. Approving the Slice sequence also authorises implementing its slices in order, one green PR at a time, with no further per-slice approval.
 - Hard stops always return to the user: the Gate-failure breaker, `Blocked`, any rescope, or a material contradiction of an approved record.
@@ -40,9 +40,9 @@ When a phase requires it:
 
 ## Records and revisions
 
-- Persist every phase record as a file under `.tenx/<issue-id>/` at the repository root: `understand.md`, `investigate.md`, `slice.md`, `review-<phase>-r<N>.md`, `implement-<slice>.md`. `<issue-id>` is the tracker ticket id when one exists; otherwise a short kebab-case slug of the problem statement — keep the slug directory and record the ticket id in the record once a ticket is created. Never stage or commit `.tenx/`. Mirror to the shared tracker only when the user authorises tracker writes; the tracker copy then becomes persisted truth.
+- Persist every phase record as a file under `.tenx/<issue-id>/` at the repository root: `understand.md`, `investigate.md`, `slice.md`, `review-<phase>-r<N>.md`, `implement-<slice>.md`, plus one `<record>.approval.md` per approved record. `<issue-id>` is the tracker ticket id when one exists; otherwise a short kebab-case slug of the problem statement — keep the slug directory and record the ticket id in the record once a ticket is created. Never stage or commit `.tenx/`. Mirror to the shared tracker only when the user authorises tracker writes; the tracker copy then becomes persisted truth.
 - A record revision is a monotonic id (`r1`, `r2`, …) in the record header plus the file's SHA-256 (`shasum -a 256 <file>`). Any content change increments the revision.
-- A valid approval records three things in the record header: the user's quoted approving response, the revision id, and the digest approved. "Exact approved record" means the current digest equals the approved digest; anything else is unapproved.
+- A valid approval is a sibling file `<record>.approval.md` (e.g. `understand.approval.md`) recording three things: the user's quoted approving response, the record's revision id, and the record file's digest at approval. Never write approval into the record file itself, and never edit a record file after approval — any change is a new revision requiring a new approval file. "Exact approved record" means the record file's current digest equals the digest in its approval file; anything else is unapproved.
 
 ## Definitions
 
