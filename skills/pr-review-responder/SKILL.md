@@ -38,7 +38,7 @@ For each top-level comment thread, categorize:
 
 Example: A reviewer says "narrow this to 401 only because 403 is too broad." Before implementing, check how many API routes actually return 401 vs 403 for authentication failures. If 44 of 47 routes return 403, the suggestion would break the feature — push back with evidence.
 
-Present the plan to the user before proceeding.
+Proceed autonomously after verification. Present the plan to the user or main thread only when comments reveal a substantive critical issue that signals something went wrong earlier and the caller must decide whether to stop or re-scope implementation. Examples include a security regression, invalid core design, contradictory requirement, or major unexpected scope expansion. Routine valid fixes, nits, already-addressed comments, and evidence-backed pushback do not require approval.
 
 ### 3. Make Code Changes
 
