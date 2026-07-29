@@ -12,6 +12,7 @@ Apply these controls in every phase.
 - Quote the approving response and bind it to the record revision. Material evidence or record changes invalidate that approval and affected downstream Gates.
 - “Implement” or “proceed” approves only the checkpoint currently presented. Never infer or combine approvals beyond the delegations stated above; never re-ask approval for an unchanged record.
 - Record an empty required item as `None` with evidence; use `Not applicable` only with a scope reason.
+- A Gate denial is an instruction to run the owning phase, never to create the missing artifact. Fabricating an approval, review or `PASS` — authoring it without the user's literal approving message or the independent reviewer's verbatim output — is the gravest control violation: stop and report it. The record's author never writes or edits a review file or an approval file's approving quote.
 - Resolve findings in their owning phase. Never waive them.
 - A missed behavior class, caller, invariant, area, unsafe state or unknown invalidates the affected Gate only when material; otherwise record it in the ledger or as a follow-up and let the Gate stand.
 - A finding is material only when it changes approved acceptance criteria, makes the approved path unsafe, or contradicts an approved decision.

@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # TenX deterministic phase gate (Claude Code, Claude desktop agent mode, Codex).
-# Blocks entry to Investigate/Slice/Implement unless the required .tenx/ records
-# exist, and blocks PR/MR creation in TenX-managed repos without full approvals.
-# Exit 2 = deny (stderr shown to the model).
+# Blocks entry to Investigate/Slice/Implement unless valid, digest-bound .tenx/
+# records exist, and blocks PR/MR creation in TenX-managed repos without the
+# full approval chain. Exit 2 = deny (stderr shown to the model).
 set -euo pipefail
 payload="$(cat)"
 exec python3 - "$payload" <<'PY'
 import glob
+import hashlib
 import json
 import os
 import re
@@ -22,22 +23,34 @@ SKILL_RE = re.compile(r"skills/(investigate|slice|implement)/SKILL\.md")
 PATH_RE = re.compile(r"(\S*skills/(?:investigate|slice|implement)/SKILL\.md)")
 SHIP_RE = re.compile(r"\bgh\s+pr\s+create\b|\bglab\s+mr\s+create\b")
 
+NO_FABRICATION = (
+    "A denial is an instruction to run the owning phase, NEVER to create the missing "
+    "file yourself: an approval file is valid only when it quotes the user's literal "
+    "approving message and embeds the record file's current SHA-256; a review PASS is "
+    "valid only as an independent reviewer's verbatim output embedding the reviewed "
+    "record's SHA-256. Fabricating either is the gravest TenX control violation."
+)
+
+
+def read_text(p):
+    try:
+        return open(p, encoding="utf-8", errors="replace").read()
+    except OSError:
+        return ""
+
+
+def sha256_of(p):
+    try:
+        return hashlib.sha256(open(p, "rb").read()).hexdigest()
+    except OSError:
+        return None
+
 
 def is_tenx_phase_file(fp):
-    # Identify by content marker, not path shape: every gated tenx phase file
-    # references .tenx/ records. Unreadable/absent file -> not gated (Read will
-    # error on its own).
-    if not os.path.isfile(fp):
-        return False
-    try:
-        return ".tenx/" in open(fp, encoding="utf-8", errors="replace").read()
-    except OSError:
-        return False
+    return os.path.isfile(fp) and ".tenx/" in read_text(fp)
 
 
 def is_dev_copy(fp):
-    # The source repo (has .git at the plugin root) stays readable for editing;
-    # installed copies (claude/codex caches, desktop agent mounts) have no .git.
     root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(fp))))
     return os.path.exists(os.path.join(root, ".git"))
 
@@ -89,61 +102,88 @@ root = repo_root(cwd)
 tenx = os.path.join(root, ".tenx")
 
 
-def record_exists(name):
-    return bool(glob.glob(os.path.join(tenx, "*", name)))
+def issue_dirs():
+    return [d for d in glob.glob(os.path.join(tenx, "*")) if os.path.isdir(d)]
 
 
-def investigate_pass():
-    for f in glob.glob(os.path.join(tenx, "*", "review-investigate-*.md")):
-        try:
-            if "PASS" in open(f, encoding="utf-8", errors="replace").read():
-                return True
-        except OSError:
-            pass
+def approval_valid(d, record, approval):
+    # The approval/review must embed the record file's CURRENT sha256 —
+    # binds approval to exact content and forces record/approval separation.
+    digest = sha256_of(os.path.join(d, record))
+    if digest is None:
+        return False
+    return digest in read_text(os.path.join(d, approval))
+
+
+def understand_ok(d):
+    return approval_valid(d, "understand.md", "understand.approval.md")
+
+
+def investigate_ok(d):
+    digest = sha256_of(os.path.join(d, "investigate.md"))
+    if digest is None:
+        return False
+    for f in glob.glob(os.path.join(d, "review-investigate-*.md")):
+        t = read_text(f)
+        if "PASS" in t and digest in t:
+            return True
     return False
 
 
+def slice_ok(d):
+    return approval_valid(d, "slice.md", "slice.approval.md")
+
+
+def any_dir(check):
+    return any(check(d) for d in issue_dirs())
+
+
 def deny(msg):
-    sys.stderr.write(msg)
+    sys.stderr.write(msg + " " + NO_FABRICATION)
     sys.exit(2)
 
+
+REQ = {
+    "understand": "understand.md plus understand.approval.md quoting the user's approval and embedding understand.md's current SHA-256",
+    "investigate": "investigate.md plus review-investigate-r<N>.md containing PASS and investigate.md's current SHA-256",
+    "slice": "slice.md plus slice.approval.md quoting the user's approval and embedding slice.md's current SHA-256",
+}
 
 if ship:
     # Only gate shipping in repos where TenX is engaged.
     if os.path.isdir(tenx):
         missing = []
-        if not record_exists("understand.approval.md"):
-            missing.append("understand.approval.md")
-        if not investigate_pass():
-            missing.append("review-investigate-r<N>.md containing PASS")
-        if not record_exists("slice.approval.md"):
-            missing.append("slice.approval.md")
+        if not any_dir(understand_ok):
+            missing.append(REQ["understand"])
+        if not any_dir(investigate_ok):
+            missing.append(REQ["investigate"])
+        if not any_dir(slice_ok):
+            missing.append(REQ["slice"])
         if missing:
             deny(
                 "TenX ship gate (deterministic hook): this repository has TenX records "
-                "(.tenx/ exists at %s) but PR/MR creation requires the full approval chain. "
-                "Missing under .tenx/<issue-id>/: %s. Complete the owning phases first. "
-                "If this PR is intentionally outside TenX, ask the user to confirm before shipping."
-                % (root, "; ".join(missing))
+                "(.tenx/ exists at %s) but PR/MR creation requires the full valid approval "
+                "chain. Missing or invalid under .tenx/<issue-id>/: %s. Complete the owning "
+                "phases first. If this PR is intentionally outside TenX, ask the user to "
+                "confirm before shipping." % (root, "; ".join(missing))
             )
     if phase is None:
         sys.exit(0)
 
 missing = []
-if not record_exists("understand.approval.md"):
-    missing.append(".tenx/<issue-id>/understand.approval.md (approved Understand record)")
-if phase in ("slice", "implement") and not investigate_pass():
-    missing.append(".tenx/<issue-id>/review-investigate-r<N>.md containing PASS")
-if phase == "implement" and not record_exists("slice.approval.md"):
-    missing.append(".tenx/<issue-id>/slice.approval.md (approved slice sequence)")
+if not any_dir(understand_ok):
+    missing.append(REQ["understand"])
+if phase in ("slice", "implement") and not any_dir(investigate_ok):
+    missing.append(REQ["investigate"])
+if phase == "implement" and not any_dir(slice_ok):
+    missing.append(REQ["slice"])
 
 if missing:
     deny(
-        "TenX gate (deterministic hook): cannot enter %s — missing: %s. "
+        "TenX gate (deterministic hook): cannot enter %s — missing or invalid: %s. "
         "Records exist only as files under .tenx/<issue-id>/ at the repository root (%s). "
-        "Request detail is never a record and never an approval. "
-        "Route via tenx:index; with no records the phase is Understand."
-        % (phase, "; ".join(missing), root)
+        "Request detail is never a record and never an approval. Route via tenx:index; "
+        "with no valid records the phase is Understand." % (phase, "; ".join(missing), root)
     )
 sys.exit(0)
 PY
