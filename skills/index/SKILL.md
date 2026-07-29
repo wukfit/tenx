@@ -5,7 +5,7 @@ description: Route broad TenX software-delivery requests to Understand, Investig
 
 # TenX
 
-Read [shared controls](../../references/controls.md) completely. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory. The plugin root is the directory containing this file's `skills/` folder: shared controls at `<root>/references/controls.md`, phase files at `<root>/skills/<name>/SKILL.md`. Give the Read tool raw absolute paths — never shell-escape spaces. Fallback when the root is unknown: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`. A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
+Read [shared controls](../../references/controls.md) completely. Resolve every relative link in this file from this SKILL.md's installed location per shared controls `Locating plugin files` (root = the directory containing this file's `skills/` folder; fallback: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`). An unreadable linked file is a hard stop: report and stop.
 
 Execute these steps in order and show each result in your response before selecting a phase:
 

@@ -5,7 +5,7 @@ description: Establish and obtain approval for a software issue's need, scope, a
 
 # Understand
 
-Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file from this SKILL.md's own installed location, never from the working directory. The plugin root is the directory containing this file's `skills/` folder: shared controls at `<root>/references/controls.md`, phase files at `<root>/skills/<name>/SKILL.md`. Give the Read tool raw absolute paths — never shell-escape spaces. Fallback when the root is unknown: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`. A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
+Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file from this SKILL.md's installed location per shared controls `Locating plugin files` (root = the directory containing this file's `skills/` folder; fallback: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`). An unreadable linked file is a hard stop: report and stop.
 
 ## Goal — CRITICAL
 
@@ -20,8 +20,8 @@ Agree the need, assigned deliverables, acceptance criteria, definition of done a
 5. Resolve discoverable unknowns from evidence. Ask remaining material questions one at a time until resolved, excluded or covered by an authorised interim rule. An unknown is material only when resolving it changes the drafted requirements, acceptance criteria, definition of done, exclusions or rollout.
 6. Keep a ledger of question, resolving evidence, resolution and wrong-answer impact. For external decisions add owner, dependent/independent work and re-entry. If empty, record `Questions: None` with evidence.
 7. Exclude externally dependent work unless the user supplies an interim rule and safe rollout. Mark provisional decisions with owner and re-entry.
-8. Present a stakeholder-ready record containing current-state audit, context, requirements, acceptance criteria, definition of done, decisions, exclusions, contracts and ledger. Persist it per shared controls (`.tenx/<issue-id>/understand.md`), mirrored to the shared tracker once approved — approval grants tracker writes for this issue.
-9. Stop and request explicit approval of the exact record revision, showing the persisted file's path and `shasum -a 256` digest in the same message — a request without them is invalid. After approval, write `understand.approval.md` per shared controls and show it. A named parent issue later receives one child ticket per approved slice in the shared tracker; if no suitable parent exists, propose one.
+8. Build the record from `<root>/references/templates/understand.md` and persist it per shared controls (`.tenx/<issue-id>/understand.md`), mirrored to the shared tracker once approved — approval grants tracker writes for this issue.
+9. Stop and request explicit approval of the exact record revision, showing the persisted file's path and `shasum -a 256` digest in the same message — a request without them is invalid. After approval, write `understand.approval.md` from the approval template and show it. A named parent issue later receives one child ticket per approved slice in the shared tracker; if no suitable parent exists, propose one.
 
 ## Evidence
 

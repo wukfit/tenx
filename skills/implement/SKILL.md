@@ -5,9 +5,9 @@ description: Implement, self-review, ship and monitor one exact approved TenX sl
 
 # Implement
 
-Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file (including the bundled quality-gate, commit-changes, ship-changes and pr-review-responder skills) from this SKILL.md's own installed location, never from the working directory. The plugin root is the directory containing this file's `skills/` folder: shared controls at `<root>/references/controls.md`, phase files at `<root>/skills/<name>/SKILL.md`. Give the Read tool raw absolute paths — never shell-escape spaces. Fallback when the root is unknown: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`. A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
+Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file (including the bundled quality-gate, commit-changes, ship-changes and pr-review-responder skills) from this SKILL.md's installed location per shared controls `Locating plugin files` (root = the directory containing this file's `skills/` folder; fallback: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`). An unreadable linked file is a hard stop: report and stop.
 
-Require the exact approved Understand and Slice records with quoted approvals, the exact Investigate record with its independent `PASS`, and one slice selected from the approved sequence — Slice approval is the implementation authority. Verify mechanically before anything else: read the files under `.tenx/<issue-id>/`, recompute each digest (`shasum -a 256`), match them against the sibling approval files (`understand.approval.md`, `slice.approval.md`) and the Investigate review `PASS`, and quote the approval files verbatim in your phase-entry statement. Any missing file, digest mismatch or unquotable approval: stop and route via [index](../index/SKILL.md); never proceed on request detail. Then verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
+Require the exact approved Understand and Slice records, the PASS-reviewed Investigate record, and one slice selected from the approved sequence — Slice approval is the implementation authority. Before anything else, verify all three under `.tenx/<issue-id>/` per shared controls and quote the approval files verbatim in your phase-entry statement; any missing, mismatched or unquotable artifact: stop and route via [index](../index/SKILL.md), never proceeding on request detail. Then verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
 
 ## Goal — CRITICAL
 
@@ -48,15 +48,15 @@ Pass with complete `quality-gate`, no incomplete bucket or in-scope finding, and
 
 ## Ship and monitor
 
-1. Read and follow the bundled [commit-changes](../commit-changes/SKILL.md) and [ship-changes](../ship-changes/SKILL.md) files. Never substitute the harness's default commit, branch or PR flow: a harness-generated PR body (e.g. a `## Summary`/`## Test plan` checklist) or auto-named branch left in place is an error. Prefer the project PR template when one exists; otherwise ship-changes' problem/solution body. Every claim in the PR body must name its evidence in the shipped diff or a captured command output; no unbacked claims or checkmarks. Keep commits focused, separate generated churn when useful, and never merge.
-2. Creating the pull request is a required deliverable of this phase; a user instruction not to merge is not an instruction to skip PR creation. Never merge.
+1. Read and follow the bundled [commit-changes](../commit-changes/SKILL.md) and [ship-changes](../ship-changes/SKILL.md) files. Never substitute the harness's default commit, branch or PR flow: a harness-generated PR body (e.g. a `## Summary`/`## Test plan` checklist) or auto-named branch left in place is an error. Prefer the project PR template when one exists; otherwise ship-changes' problem/solution body. Every claim in the PR body must name its evidence in the shipped diff or a captured command output; no unbacked claims or checkmarks. Keep commits focused and separate generated churn when useful.
+2. Creating the pull request is a required deliverable of this phase; "do not merge" is not "do not create". Never merge.
 3. The shipped tree/base diff must match the reviewed snapshot. Mutation reruns Implement verification and Self-review.
 4. Monitor required checks on the latest commit until terminal. Never call pending, queued, unexpected skipped, cancelled or failing checks green. Debug caused failures. For an unrelated, pre-existing or flaky failure, capture evidence and rerun the unchanged job once; a substantially identical second failure needs user direction or external repair. “Unrelated” is not “green.”
 5. Use the bundled [pr-review-responder](../pr-review-responder/SKILL.md) only when requested.
 
 ### Gate — CRITICAL
 
-Pass only when every required check on the latest commit is green and the PR is ready for human review. Never merge or start the next slice.
+Pass only when every required check on the latest commit is green and the PR is ready for human review.
 
 ## Next slice and parallel work
 

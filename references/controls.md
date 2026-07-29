@@ -2,6 +2,12 @@
 
 Apply these controls in every phase.
 
+## Locating plugin files
+
+- The plugin root is the directory containing the current skill's `skills/` folder. Shared controls: `<root>/references/controls.md`; phase files: `<root>/skills/<name>/SKILL.md`; record templates: `<root>/references/templates/`.
+- Resolve every relative link from the SKILL.md's installed location, never from the working directory. Give the Read tool raw absolute paths — never shell-escape spaces.
+- A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
+
 ## Gates and authority
 
 - Pass on evidence, never intent, confidence or promised work.
@@ -43,6 +49,7 @@ When a phase requires it:
 
 - Persist every phase record as a file under `.tenx/<issue-id>/` at the repository root: `understand.md`, `investigate.md`, `slice.md`, `review-<phase>-r<N>.md`, `implement-<slice>.md`, plus one `<record>.approval.md` per approved record. `<issue-id>` is the tracker ticket id when one exists; otherwise a short kebab-case slug of the problem statement — keep the slug directory and record the ticket id in the record once a ticket is created. Never stage or commit `.tenx/`. Mirror to the shared tracker only when the user authorises tracker writes; the tracker copy then becomes persisted truth.
 - A record revision is a monotonic id (`r1`, `r2`, …) in the record header plus the file's SHA-256 (`shasum -a 256 <file>`). Any content change increments the revision.
+- Start every record, approval and review file from its template in `<root>/references/templates/`; never invent structures.
 - A record presented only in conversation does not exist. Every phase output — record, approval, review, ticket, pull request — must exist as its artifact (file, tracker ticket, PR), and the message claiming it must show the artifact's path and digest, or its identifier/URL. Requesting approval without showing the persisted record's path and digest is invalid.
 - A valid approval is a sibling file `<record>.approval.md` (e.g. `understand.approval.md`) recording three things: the user's quoted approving response, the record's revision id, and the record file's digest at approval. Never write approval into the record file itself, and never edit a record file after approval — any change is a new revision requiring a new approval file. "Exact approved record" means the record file's current digest equals the digest in its approval file; anything else is unapproved.
 
