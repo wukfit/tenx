@@ -58,6 +58,8 @@ Pass with complete `quality-gate`, no incomplete bucket or in-scope finding, and
 
 Pass only when every required check on the latest commit is green and the PR is ready for human review.
 
+Implement has exactly three terminal states: this Gate passed; `Blocked`, reported with its blocking evidence; or a return to an owning phase. "Done except <skipped step>" is not a state — reporting completion while any required step (aggregate, self-review, PR creation, check monitoring) was skipped without `Blocked` evidence is a false completion report.
+
 ## Next slice and parallel work
 
 Start the next slice in a fresh task after the prior merge, unless explicit parallel-development approval exists. Never stack pull requests: every slice branches from and targets the current default branch. A slice depending on an unmerged slice's code is blocked from implementation until that slice merges; record the blocking slice, merge prerequisite, deployment prerequisite and re-entry. A genuinely independent slice may be developed and its PR created in parallel even when deployment or activation must wait.
