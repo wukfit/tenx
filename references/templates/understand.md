@@ -19,5 +19,5 @@
 ## Contracts and handoffs
 
 ## Ledger
-- Q: <question> | Evidence: <resolving evidence> | Resolution: <answer> | Wrong-answer impact: <impact>
-<or `Questions: None` with evidence>
+- Q: <question> | Resolved by: evidence: <cited artifact that uniquely determines the answer> OR user: "<reply quoted verbatim>" | Resolution: <answer> | Wrong-answer impact: <impact>
+<or `Questions: None` with evidence. A `Resolved by: evidence` entry whose artifact does not uniquely determine the answer is a fabricated decision.>
