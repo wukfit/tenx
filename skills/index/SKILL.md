@@ -9,7 +9,7 @@ Read [shared controls](../../references/controls.md) completely. Resolve every r
 
 Execute these steps in order and show each result in your response before selecting a phase:
 
-1. Determine `<issue-id>` per shared controls.
+1. Determine `<issue-id>` per shared controls, then write that bare id to `.tenx/current` at the repository root and show the file's contents. Every Gate verifies only the directory this names, so a stale pointer routes the whole issue wrongly.
 2. Run `ls .tenx/<issue-id>/` at the repository root and show the output (or the error).
 3. For each record file present: recompute its digest (`shasum -a 256`) and quote its sibling approval file (`<record>.approval.md`) or review `PASS` verbatim.
 4. Select the earliest phase below whose entry evidence is missing. State the selected phase, the files checked, the digest results and the quoted approvals. A phase selection without the step 2 output shown is invalid.

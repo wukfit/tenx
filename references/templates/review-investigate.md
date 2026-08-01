@@ -10,6 +10,11 @@
 ## Findings and owning-phase routing
 
 ## Verdict
-PASS | FAIL — for the exact digest above.
+
+Verdict: <PASS or FAIL>
+
+Replace the line above with exactly one of `Verdict: PASS` or `Verdict: FAIL`, for the
+exact digest above. The gate reads that line verbatim; leaving the placeholder, or naming
+both outcomes on one line, is not a pass.
 
 Persisted verbatim from the reviewer's output. The record's author never writes or edits this file.

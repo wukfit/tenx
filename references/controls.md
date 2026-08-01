@@ -33,7 +33,7 @@ When a phase requires it:
 
 1. Use a reviewer who neither authored the record nor will implement it.
 2. Provide read-only exact sources, approved records and consulted-source manifest. Require independent source/caller enumeration, manifest corrections and every named probe without leading findings.
-3. Persist full output, reviewer/run identity, input/source digests, probe answers, findings and owning-phase routing.
+3. Persist full output, reviewer/run identity, input/source digests, probe answers, findings and owning-phase routing. The verdict is a line reading exactly `Verdict: PASS` or `Verdict: FAIL`; the Gate reads that line verbatim, so an unreplaced placeholder or a line naming both outcomes is not a pass.
 4. Resolve findings and rerun the same reviewer until it rechecks every prior finding and returns `PASS` for the exact revision. A replacement receives the full history and re-verifies everything. Never discard an unfavourable review.
 5. A record change invalidates its verdict. No reviewer means Gate failure. Review validates evidence; it stands in for user approval only where these controls delegate a Gate (Investigate), never elsewhere.
 
@@ -48,6 +48,7 @@ When a phase requires it:
 ## Records and revisions
 
 - Persist every phase record as a file under `.tenx/<issue-id>/` at the repository root: `understand.md`, `investigate.md`, `slice.md`, `review-<phase>-r<N>.md`, `implement-<slice>.md`, plus one `<record>.approval.md` per approved record. `<issue-id>` is the tracker ticket id when one exists; otherwise a short kebab-case slug of the problem statement — keep the slug directory and record the ticket id in the record once a ticket is created. Never stage or commit `.tenx/`. Mirror to the shared tracker only when the user authorises tracker writes; the tracker copy then becomes persisted truth.
+- `.tenx/current` holds the bare `<issue-id>` of the issue being worked on, and nothing else. Every Gate verifies that one directory only, so records approved under a different `<issue-id>` never satisfy a Gate here — a completed past issue authorises nothing for a new one. Write it when the issue is determined, and rewrite it when switching issues; a missing, empty or unmatched pointer is a Gate failure.
 - A record revision is a monotonic id (`r1`, `r2`, …) in the record header plus the file's SHA-256 (`shasum -a 256 <file>`). Any content change increments the revision.
 - Start every record, approval and review file from its template in `<root>/references/templates/`; never invent structures.
 - A record presented only in conversation does not exist. Every phase output — record, approval, review, ticket, pull request — must exist as its artifact (file, tracker ticket, PR), and the message claiming it must show the artifact's path and digest, or its identifier/URL. Requesting approval without showing the persisted record's path and digest is invalid.
