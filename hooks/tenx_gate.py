@@ -28,10 +28,9 @@ SHIP_RE = re.compile(r"\bgh\s+pr\s+create\b|\bglab\s+mr\s+create\b")
 # template placeholder ("Verdict: <PASS or FAIL>") must never satisfy this.
 VERDICT_PASS_RE = re.compile(r"^[ \t]*Verdict:[ \t]*PASS[ \t]*$", re.MULTILINE)
 
-# Marker file that exempts a working copy of the plugin itself from the gate.
-# Keyed off an explicit opt-in file, never off the presence of .git — installed
-# plugins are themselves git clones.
-DEV_MARKER = ".tenx-dev"
+# This hook governs the plugin it ships inside, and only that copy. The module
+# lives at <plugin_root>/hooks/tenx_gate.py.
+PLUGIN_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 NO_FABRICATION = (
     "A denial is an instruction to run the owning phase, NEVER to create the missing "
@@ -86,14 +85,27 @@ def is_tenx_phase_file(path: str) -> bool:
     return os.path.isfile(path) and ".tenx/" in read_text(path)
 
 
-def is_dev_copy(path: str) -> bool:
-    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(path))))
-    return os.path.exists(os.path.join(root, DEV_MARKER))
+def is_own_plugin_file(path: str) -> bool:
+    """True when the path is one of THIS plugin's own files.
+
+    Reading a phase file directly is how the Skill gate gets sidestepped, so
+    those reads are blocked — but only for the copy this hook belongs to. A
+    checkout of the TenX source somewhere else is just files on disk: editing
+    the plugin is not using it, and the hook has no business policing it. That
+    also removes any need to tell a development copy from an installed one,
+    which is guesswork the hook kept getting wrong.
+    """
+    try:
+        return os.path.commonpath(
+            [os.path.realpath(path), os.path.realpath(PLUGIN_ROOT)]
+        ) == os.path.realpath(PLUGIN_ROOT)
+    except (OSError, ValueError):  # different drives, or an unresolvable path
+        return False
 
 
 def gated_phase_from_path(path: str) -> str | None:
     match = SKILL_RE.search(path)
-    if match and is_tenx_phase_file(path) and not is_dev_copy(path):
+    if match and is_own_plugin_file(path) and is_tenx_phase_file(path):
         return match.group(1)
     return None
 

@@ -253,34 +253,36 @@ def test_unrelated_tool_calls_are_untouched() -> None:
         assert gate(root, "Read", {"file_path": str(root / "README.md")}).returncode == 0
 
 
-def test_reading_the_phase_file_directly_is_gated() -> None:
-    """Reading SKILL.md must not bypass the Skill-tool gate."""
+def test_reading_this_plugins_own_phase_file_is_gated() -> None:
+    """Reading our own SKILL.md must not bypass the Skill-tool gate."""
+    own_skill = Path(__file__).parents[1] / "skills/implement/SKILL.md"
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         init_repo(root)
-        skill = write(
-            root / "plugin/skills/implement/SKILL.md",
-            "# Implement\nRecords live under .tenx/<issue-id>/.\n",
-        )
-        assert gate(root, "Read", {"file_path": str(skill)}).returncode == 2
-        assert gate(root, "Bash", {"command": f"cat {skill}"}).returncode == 2
+        assert gate(root, "Read", {"file_path": str(own_skill)}).returncode == 2
+        assert gate(root, "Bash", {"command": f"cat {own_skill}"}).returncode == 2
 
 
-def test_dev_marker_exempts_a_plugin_working_copy() -> None:
-    """The exemption keys off .tenx-dev, never off .git."""
+def test_a_phase_file_outside_this_plugin_is_not_policed() -> None:
+    """A TenX checkout elsewhere is just files. Editing the plugin is not using it.
+
+    This is what removes the need to distinguish a development copy from an
+    installed one — the hook only ever polices the copy it ships inside.
+    """
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         init_repo(root)
-        skill = write(
-            root / "plugin/skills/implement/SKILL.md",
+        elsewhere = write(
+            root / "some-checkout/skills/implement/SKILL.md",
             "# Implement\nRecords live under .tenx/<issue-id>/.\n",
         )
-        # A git clone alone must NOT exempt it — installed plugins are clones.
-        init_repo(root / "plugin")
-        assert gate(root, "Read", {"file_path": str(skill)}).returncode == 2
+        assert gate(root, "Read", {"file_path": str(elsewhere)}).returncode == 0
+        assert gate(root, "Bash", {"command": f"cat {elsewhere}"}).returncode == 0
 
-        write(root / "plugin" / ".tenx-dev", "")
-        assert gate(root, "Read", {"file_path": str(skill)}).returncode == 0
+        # Not even when a stray marker or clone metadata is sitting next to it.
+        for stowaway in (".git", ".tenx-dev"):
+            write(root / "some-checkout" / stowaway, "")
+        assert gate(root, "Read", {"file_path": str(elsewhere)}).returncode == 0
 
 
 def test_malformed_payload_fails_closed() -> None:
@@ -303,8 +305,8 @@ def main() -> int:
         test_ship_is_gated_by_the_active_issues_own_chain,
         test_ship_is_not_gated_in_repos_without_tenx,
         test_unrelated_tool_calls_are_untouched,
-        test_reading_the_phase_file_directly_is_gated,
-        test_dev_marker_exempts_a_plugin_working_copy,
+        test_reading_this_plugins_own_phase_file_is_gated,
+        test_a_phase_file_outside_this_plugin_is_not_policed,
         test_malformed_payload_fails_closed,
     ]
     for test in tests:
