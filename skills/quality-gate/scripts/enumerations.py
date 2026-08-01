@@ -13,11 +13,27 @@ Every listed item is a prompt for review, not proof of a problem. Truncation
 is always reported explicitly so silence never reads as coverage.
 """
 
+from __future__ import annotations
+
 import argparse
 import re
+import sys
 from pathlib import Path
 
-from quality_scan import added_lines_by_file, changed_files, repo_root, resolve_base, run_git
+MIN_PYTHON = (3, 9)
+if sys.version_info < MIN_PYTHON:
+    sys.exit(
+        f"quality-gate scripts require Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+; "
+        f"this interpreter is {sys.version.split()[0]} ({sys.executable})."
+    )
+
+from quality_scan import (  # noqa: E402
+    added_lines_by_file,
+    changed_files,
+    repo_root,
+    resolve_base,
+    run_git,
+)
 
 MAX_SYMBOLS = 60
 MAX_CALLERS_PER_SYMBOL = 20

@@ -11,6 +11,16 @@ import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+# str.removeprefix and PEP 585 builtin generics (under the __future__ import)
+# both require 3.9. Fail with a readable message instead of a SyntaxError or
+# TypeError from deep inside the module.
+MIN_PYTHON = (3, 9)
+if sys.version_info < MIN_PYTHON:
+    sys.exit(
+        f"quality-gate scripts require Python {MIN_PYTHON[0]}.{MIN_PYTHON[1]}+; "
+        f"this interpreter is {sys.version.split()[0]} ({sys.executable})."
+    )
+
 
 @dataclass
 class Finding:
