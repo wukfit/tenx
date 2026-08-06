@@ -5,7 +5,7 @@ description: Implement, self-review, ship and monitor one exact approved TenX sl
 
 # Implement
 
-Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file (including the bundled quality-gate, commit-changes, ship-changes and pr-review-responder skills) from this SKILL.md's installed location per shared controls `Locating plugin files` (root = the directory containing this file's `skills/` folder; fallback: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`). An unreadable linked file is a hard stop: report and stop.
+Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting. An unreadable linked file is a hard stop: report it and stop.
 
 Require the exact approved Understand and Slice records, the PASS-reviewed Investigate record, and one slice selected from the approved sequence — Slice approval is the implementation authority. Before anything else, verify all three under `.tenx/<issue-id>/` per shared controls and quote the approval files verbatim in your phase-entry statement; any missing, mismatched or unquotable artifact: stop and route via [index](../index/SKILL.md), never proceeding on request detail. Then verify issue state, ownership, current default branch and material drift. Unchanged handoff records remain approved; changed evidence returns to its owning phase.
 

@@ -1,11 +1,11 @@
 # TenX controls
 
-Apply these controls in every phase.
+Apply these controls in every phase. Two companion files are read when a phase needs them, not upfront: [definitions](definitions.md) for the exact meaning of the terms used here, and [review protocol](review-protocol.md) for how an independent review is run.
 
 ## Locating plugin files
 
-- The plugin root is the directory containing the current skill's `skills/` folder. Shared controls: `<root>/references/controls.md`; phase files: `<root>/skills/<name>/SKILL.md`; record templates: `<root>/references/templates/`.
-- Resolve every relative link from the SKILL.md's installed location, never from the working directory. Give the Read tool raw absolute paths — never shell-escape spaces.
+- Plugin files live under `${CLAUDE_PLUGIN_ROOT}`: shared controls at `references/controls.md`, phase files at `skills/<name>/SKILL.md`, record templates at `references/templates/`. If your harness leaves that placeholder unsubstituted, resolve each path relative to the SKILL.md you are reading, never from the working directory.
+- Give the Read tool raw absolute paths — never shell-escape spaces.
 - A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
 ## Gates and authority
@@ -27,16 +27,6 @@ Apply these controls in every phase.
 - `Blocked` means unresolved authority, an external decision without an authorised interim rule, or an unavailable prerequisite without a safe alternative. Pending CI, unrelated failure or unavailable local check is evidence, not automatically a blocker.
 - After three substantially identical Gate failures, or on the second return to any phase within one issue for any cause, stop. Present every round's cause and the scope history, then ask direction: freeze scope and proceed, split findings into new issues, or rescope. Reset only on relevant new evidence, record revision or external change.
 
-## Independent planning review
-
-When a phase requires it:
-
-1. Use a reviewer who neither authored the record nor will implement it.
-2. Provide read-only exact sources, approved records and consulted-source manifest. Require independent source/caller enumeration, manifest corrections and every named probe without leading findings.
-3. Persist full output, reviewer/run identity, input/source digests, probe answers, findings and owning-phase routing. The verdict is a line reading exactly `Verdict: PASS` or `Verdict: FAIL`; the Gate reads that line verbatim, so an unreplaced placeholder or a line naming both outcomes is not a pass.
-4. Resolve findings and rerun the same reviewer until it rechecks every prior finding and returns `PASS` for the exact revision. A replacement receives the full history and re-verifies everything. Never discard an unfavourable review.
-5. A record change invalidates its verdict. No reviewer means Gate failure. Review validates evidence; it stands in for user approval only where these controls delegate a Gate (Investigate), never elsewhere.
-
 ## Scope and evidence
 
 - Bind every result to its exact source/base. External evidence names the run, source, automation definition and completed jobs.
@@ -50,22 +40,7 @@ When a phase requires it:
 - Persist every phase record as a file under `.tenx/<issue-id>/` at the repository root: `understand.md`, `investigate.md`, `slice.md`, `review-<phase>-r<N>.md`, `implement-<slice>.md`, plus one `<record>.approval.md` per approved record. `<issue-id>` is the tracker ticket id when one exists; otherwise a short kebab-case slug of the problem statement — keep the slug directory and record the ticket id in the record once a ticket is created. Never stage or commit `.tenx/`. Mirror to the shared tracker only when the user authorises tracker writes; the tracker copy then becomes persisted truth.
 - `.tenx/current` holds the bare `<issue-id>` of the issue being worked on, and nothing else. Every Gate verifies that one directory only, so records approved under a different `<issue-id>` never satisfy a Gate here — a completed past issue authorises nothing for a new one. Write it when the issue is determined, and rewrite it when switching issues; a missing, empty or unmatched pointer is a Gate failure.
 - A record revision is a monotonic id (`r1`, `r2`, …) in the record header plus the file's SHA-256 (`shasum -a 256 <file>`). Any content change increments the revision.
-- Start every record, approval and review file from its template in `<root>/references/templates/`; never invent structures.
+- Start every record, approval and review file from its template in `${CLAUDE_PLUGIN_ROOT}/references/templates/`; never invent structures.
 - A record presented only in conversation does not exist. Every phase output — record, approval, review, ticket, pull request — must exist as its artifact (file, tracker ticket, PR), and the message claiming it must show the artifact's path and digest, or its identifier/URL. Requesting approval without showing the persisted record's path and digest is invalid.
 - A valid approval is a sibling file `<record>.approval.md` (e.g. `understand.approval.md`) recording three things: the user's quoted approving response, the record's revision id, and the record file's digest at approval. Never write approval into the record file itself, and never edit a record file after approval — any change is a new revision requiring a new approval file. "Exact approved record" means the record file's current digest equals the digest in its approval file; anything else is unapproved.
 
-## Definitions
-
-Use these meanings exactly; do not reinterpret.
-
-- Shared tracker: the project's issue system (GitHub Issues, Jira, Linear, Azure Boards, …). Determine it once per issue, in order: the user's statement, where the issue itself lives, repository/project configuration, tracker tools connected to the session. If still unknown, ask the user once and record the answer in the Understand record.
-- Forge: the code host serving pull/merge requests (GitHub, GitLab, Bitbucket, …). Determine it from `git remote get-url origin`; if unrecognized, ask the user.
-- Substantially identical Gate failures: same Gate and same root cause.
-- Semantic growth: the work delivers an outcome, behavior class or seam not named in the approved slice record. File or line count variance alone is never semantic growth.
-- Cohesive slice: one outcome or seam plus its tests; nothing else.
-- Inert: merged code unreachable in production — uncalled, unrouted, or behind a default-off toggle.
-- Safe intermediate state: after this slice alone merges and deploys, every existing behavior is preserved and no partial feature is user-reachable.
-- Drift: post-approval changes on the current base touching the approved files, symbols, callers or invariants; apply the materiality test to decide whether it invalidates.
-- Independent reviewer: a fresh-context sub-agent or sub-task (in Claude Code, the Agent tool; otherwise the harness's sub-task facility, or a fresh session) given only the listed inputs and none of the author's working context or conclusions.
-- Canonical aggregate: the repository's documented full verification command or CI aggregate job; never an ad-hoc subset.
-- Cold review: reviewing the complete diff in fresh context, not from memory of having written it.
