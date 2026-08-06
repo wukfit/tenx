@@ -5,7 +5,7 @@ description: Establish and obtain approval for a software issue's need, scope, a
 
 # Understand
 
-Read [shared controls](../../references/controls.md) completely before acting. Resolve every relative link in this file from this SKILL.md's installed location per shared controls `Locating plugin files` (root = the directory containing this file's `skills/` folder; fallback: `find "$HOME/.claude/plugins" "$HOME/.codex" "$HOME/Library/Application Support/Claude" -name controls.md -exec grep -l "TenX controls" {} + 2>/dev/null | sort -V | tail -1`). An unreadable linked file is a hard stop: report and stop.
+Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting. An unreadable linked file is a hard stop: report it and stop.
 
 ## Goal — CRITICAL
 
@@ -20,7 +20,7 @@ Agree the need, assigned deliverables, acceptance criteria, definition of done a
 5. Facts are looked up; decisions belong to the user. Resolve an unknown from evidence only when a specific artifact (file, migration, doc, prior decision) uniquely determines the answer; cite that artifact in the ledger. Everything else is the user's decision: put each one to them singly — one question per message (asking several at once is bewildering), with your recommended answer and concrete options where they exist, via the harness's question tool when available — then stop and wait for the reply. Never answer your own question: a self-resolved decision without uniquely-determining evidence is a fabricated decision. Continue until every material unknown is resolved, excluded or covered by an authorised interim rule. An unknown is material only when resolving it changes the drafted requirements, acceptance criteria, definition of done, exclusions or rollout.
 6. Keep a ledger of question, resolver (the cited artifact, or the user's reply quoted verbatim), resolution and wrong-answer impact. For external decisions add owner, dependent/independent work and re-entry. If empty, record `Questions: None` with evidence.
 7. Exclude externally dependent work unless the user supplies an interim rule and safe rollout. Mark provisional decisions with owner and re-entry.
-8. Build the record from `<root>/references/templates/understand.md` and persist it per shared controls (`.tenx/<issue-id>/understand.md`), mirrored to the shared tracker once approved — approval grants tracker writes for this issue.
+8. Build the record from `${CLAUDE_PLUGIN_ROOT}/references/templates/understand.md` and persist it per shared controls (`.tenx/<issue-id>/understand.md`), mirrored to the shared tracker once approved — approval grants tracker writes for this issue.
 9. Stop and request explicit approval of the exact record revision, showing the persisted file's path and `shasum -a 256` digest in the same message — a request without them is invalid. After approval, write `understand.approval.md` from the approval template and show it. A named parent issue later receives one child ticket per approved slice in the shared tracker; if no suitable parent exists, propose one.
 
 ## Evidence
