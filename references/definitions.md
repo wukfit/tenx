@@ -10,6 +10,6 @@ Use these meanings exactly; do not reinterpret.
 - Inert: merged code unreachable in production — uncalled, unrouted, or behind a default-off toggle.
 - Safe intermediate state: after this slice alone merges and deploys, every existing behavior is preserved and no partial feature is user-reachable.
 - Drift: post-approval changes on the current base touching the approved files, symbols, callers or invariants; apply the materiality test to decide whether it invalidates.
-- Independent reviewer: a fresh-context sub-agent or sub-task (in Claude Code, the Agent tool; otherwise the harness's sub-task facility, or a fresh session) given only the listed inputs and none of the author's working context or conclusions.
+- Independent reviewer: a fresh-context sub-agent or sub-task given only the listed inputs and none of the author's working context or conclusions. In Claude Code, dispatch the bundled `tenx:independent-reviewer` agent, which pins the reviewer's model and effort so review rigour does not drift with the harness default; otherwise use the harness's sub-task facility, or a fresh session.
 - Canonical aggregate: the repository's documented full verification command or CI aggregate job; never an ad-hoc subset.
 - Cold review: reviewing the complete diff in fresh context, not from memory of having written it.

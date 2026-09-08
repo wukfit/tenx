@@ -5,7 +5,7 @@ description: Prove the smallest safe implementation path for an exact approved T
 
 # Investigate
 
-Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting. An unreadable linked file is a hard stop: report it and stop. Require the exact approved Understand record: verify `.tenx/<issue-id>/understand.md` against `understand.approval.md` per shared controls and quote the approval verbatim in your phase-entry statement; missing, mismatched or unquotable returns to Understand. Request detail is never a record; "approved alignment from the incident context/request/prompt" is always an error.
+Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting, unless you have already read them in full in this session — they do not change mid-session. An unreadable linked file is a hard stop: report it and stop. Require the exact approved Understand record: verify `.tenx/<issue-id>/understand.md` against `understand.approval.md` per shared controls and quote the approval verbatim in your phase-entry statement; missing, mismatched or unquotable returns to Understand. Request detail is never a record; "approved alignment from the incident context/request/prompt" is always an error.
 
 ## Goal — CRITICAL
 
@@ -14,11 +14,11 @@ Prove the smallest safe implementation path satisfying the approved alignment.
 ## Work
 
 1. Reconfirm an approved unmet criterion on the exact current base. If none remains, return to Understand and take the no-work exit.
-2. Trace behavior end-to-end: all callers, tests, contracts, persistence, deployment and owners. Compare dormant or old code with current rules.
+2. Trace behavior end-to-end: callers, tests, contracts, persistence, deployment and owners. Enumerate up to 20 callers per changed symbol; past that, record the total count, how the 20 were chosen and that the list is truncated. A truncated list stated as truncated is evidence; a silently sampled list is not. Compare dormant or old code with current rules.
 3. Inspect and cite repository conventions before specifying migrations, identifiers, endpoint shapes, pagination, sorting, generated files or utilities. Reuse existing seams.
 4. For persistence changes, establish historical behavior. Prove why existing immutable context cannot identify the record before adding stored identity or relationships. Reject designs justified only by unsupported state transitions.
 5. Decide whether a toggle is needed. Protect changed or hidden production behavior; avoid toggles for safe additive behavior unless policy requires one.
-6. Build a matrix of applicable operations, states, variants, trust failures, history, sibling callers and removal/retry/refund/rollback/dependency failures. Each cell names preserved behavior, an acceptance test, an evidenced exclusion or a blocked decision.
+6. Build a matrix of applicable operations, states, variants, trust failures, history, sibling callers and removal/retry/refund/rollback/dependency failures. First list those dimensions and mark each one that does not apply to this alignment as `not applicable because ...`; expand cells only for the dimensions that remain. Each expanded cell names preserved behavior, an acceptance test, an evidenced exclusion or a blocked decision.
 7. Map every criterion and invariant to its seam, callers, persistence/contract impact and named test or command.
 8. Record facts separately from inferences, review/conflict/rollout risks, safe intermediate states and the minimum path.
 9. Independently review for missing behaviors, callers, invariants, history, unsafe states, unsupported assumptions and simpler safe seams, following the [review protocol](${CLAUDE_PLUGIN_ROOT}/references/review-protocol.md).

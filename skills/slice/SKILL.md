@@ -5,7 +5,7 @@ description: Turn an exact approved TenX investigation into user-approved cohesi
 
 # Slice
 
-Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting. An unreadable linked file is a hard stop: report it and stop. Require the exact approved Understand record and the PASS-reviewed Investigate record: verify both under `.tenx/<issue-id>/` per shared controls and quote the approval and `PASS` verbatim in your phase-entry statement; missing, mismatched or unquotable returns to the owning phase. Request detail is never a record.
+Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting, unless you have already read them in full in this session — they do not change mid-session. An unreadable linked file is a hard stop: report it and stop. Require the exact approved Understand record and the PASS-reviewed Investigate record: verify both under `.tenx/<issue-id>/` per shared controls and quote the approval and `PASS` verbatim in your phase-entry statement; missing, mismatched or unquotable returns to the owning phase. Request detail is never a record.
 
 ## Goal — CRITICAL
 
