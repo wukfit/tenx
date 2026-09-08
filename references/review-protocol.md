@@ -2,7 +2,7 @@
 
 Follow this when a phase requires an independent review. `Independent reviewer` is defined in [definitions](definitions.md).
 
-1. Use a reviewer who neither authored the record nor will implement it.
+1. Use a reviewer who neither authored the record nor will implement it — in Claude Code, the bundled `tenx:independent-reviewer` agent.
 2. Provide read-only exact sources as an explicit manifest — file paths with line ranges, the approved records, and the consulted-source manifest — never a bare repository path or an open invitation to explore. Require independent source/caller enumeration within that manifest, manifest corrections and every named probe without leading findings. A reviewer that needs a source outside the manifest states what it could not see and why it matters; it does not go looking.
 3. Persist full output, reviewer/run identity, input/source digests, probe answers, findings and owning-phase routing. The verdict is a line reading exactly `Verdict: PASS` or `Verdict: FAIL`; the Gate reads that line verbatim, so an unreplaced placeholder or a line naming both outcomes is not a pass.
 4. Resolve findings and rerun the same reviewer, which rechecks its own prior findings and the sections of the record that changed — not the whole record — and returns `PASS` for the exact revision. Cap this at two rerun rounds: if the reviewer has not returned `PASS` after the second rerun, stop and present the open findings, the resolutions attempted and the reviewer's latest output to the user for direction. A replacement reviewer, being a different reviewer, receives the full history and re-verifies everything. Never discard an unfavourable review.
