@@ -5,7 +5,7 @@ description: Establish and obtain approval for a software issue's need, scope, a
 
 # Understand
 
-Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting. An unreadable linked file is a hard stop: report it and stop.
+Read the [shared controls](${CLAUDE_PLUGIN_ROOT}/references/controls.md) completely before acting, unless you have already read them in full in this session — they do not change mid-session. An unreadable linked file is a hard stop: report it and stop.
 
 ## Goal — CRITICAL
 

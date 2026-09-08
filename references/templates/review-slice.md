@@ -2,7 +2,8 @@
 
 - Reviewer: <fresh-context sub-agent identity / run>
 - Reviewed record SHA-256: <digest of slice.md as reviewed>
-- Inputs provided: <read-only sources, approved records, consulted-source manifest>
+- Inputs provided: <source manifest as paths with line ranges, approved records, consulted-source manifest>
+- Sources needed but not in the manifest: <what could not be seen and why it matters, or `None`>
 
 ## Probes and answers
 <decomposition, coupling, size, dependency classes, order, deployment states, independent merge/deploy safety — every probe answered; "no finding" states what was checked>

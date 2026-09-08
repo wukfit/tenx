@@ -8,6 +8,12 @@ Apply these controls in every phase. Two companion files are read when a phase n
 - Give the Read tool raw absolute paths — never shell-escape spaces.
 - A linked file that cannot be read is a hard stop: report it and stop — never proceed without it.
 
+## Session hygiene
+
+- Run one phase per session. Records are the handoff between phases, not conversation context: a phase reads the approved records it needs and none of the prior phase's working context. Chaining Understand, Investigate and Slice in one session carries Investigate's tracing context into every later request for no evidential gain.
+- Within Implement, start each slice in a fresh session after the prior merge, per that phase's own rule.
+- If context grows large mid-phase, persist the record, then continue in a fresh session from that record's path and digest. The persisted record, not the conversation, is what the next step needs.
+
 ## Gates and authority
 
 - Pass on evidence, never intent, confidence or promised work.
