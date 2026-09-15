@@ -88,7 +88,7 @@ These work independently of the phase chain:
 - `tenx:commit-changes` — conventional-commit messages for the working tree.
 - `tenx:ship-changes` — branch, commit, push and open a PR/MR on the project's forge.
 - `tenx:pr-review-responder` — fetch PR review comments, fix or explain, reply per thread.
-- `tenx:quality-gate` — pre-PR review: mechanical scans plus delegated bucket agents.
+- `tenx:quality-gate` — pre-PR review: mechanical scans plus delegated bucket agents (`tenx:quality-bucket-reviewer`, pinned to sonnet at medium effort).
 
 ## Layout
 
